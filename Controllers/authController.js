@@ -2,6 +2,20 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password'); // Excluye la contraseña
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error('Error al obtener el perfil del usuario:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+
 const registerUser = async (req, res) => {
     const { name, lastname, email, password } = req.body;
 
@@ -38,4 +52,4 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser,  getUserProfile };
