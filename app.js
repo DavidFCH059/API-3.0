@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const authRoutes = require('./Routes/authRoutes'); // Importar rutas de autenticación
 
 // Cargar variables de entorno desde el archivo .env
 dotenv.config();
@@ -16,12 +15,6 @@ app.use(cors());
 
 // Middleware para analizar el cuerpo de las solicitudes en formato JSON
 app.use(express.json());
-
-
-
-// Rutas de autenticación
-app.use('/api/auth', authRoutes);
-
 
 
 // Conectar a MongoDB con Mongoose
