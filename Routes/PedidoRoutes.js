@@ -10,6 +10,6 @@ router.get('/', pedidoController.obtenerPedidos); // Cambia a 'obtenerPedidos'
 router.post('/', pedidoController.crearPedido); // Cambia a 'crearPedido'
 
 // Ruta para actualizar un pedido por su ID
-router.put('/:id', pedidoController.actualizarPedido);
+router.put('/:id', pedidoController.actualizarEstadoPedido);
 
 module.exports = router;
