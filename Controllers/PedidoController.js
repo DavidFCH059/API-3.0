@@ -61,4 +61,45 @@ const actualizarEstadoPedido = async (req, res) => {
     }
 };
 
-module.exports = { crearPedido, obtenerPedidos, actualizarEstadoPedido };
+// Actualizar pedido completo (PUT)
+const actualizarPedidoCompleto = async (req, res) => {
+    const { id } = req.params; // ID del pedido
+    const { cliente, productos, subtotal, iva, total, metodoPago, direccionEnvio, estado } = req.body;
+
+    try {
+        // Actualizar el pedido con todos los datos nuevos
+        const pedidoActualizado = await Pedido.findByIdAndUpdate(
+            id,
+            { cliente, productos, subtotal, iva, total, metodoPago, direccionEnvio, estado },
+            { new: true }
+        );
+
+        if (!pedidoActualizado) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
+
+        res.status(200).json(pedidoActualizado);
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el pedido completo', error });
+    }
+};
+
+// Eliminar pedido (DELETE)
+const eliminarPedido = async (req, res) => {
+    const { id } = req.params; // ID del pedido
+
+    try {
+        // Eliminar el pedido
+        const pedidoEliminado = await Pedido.findByIdAndDelete(id);
+
+        if (!pedidoEliminado) {
+            return res.status(404).json({ message: 'Pedido no encontrado' });
+        }
+
+        res.status(200).json({ message: 'Pedido eliminado correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar el pedido', error });
+    }
+};
+
+module.exports = { crearPedido, obtenerPedidos, actualizarEstadoPedido, actualizarPedidoCompleto, eliminarPedido };
