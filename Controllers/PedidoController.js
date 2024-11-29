@@ -1,18 +1,28 @@
-const Pedido = require('../Models/PedidoModel'); // Asegúrate de que la ruta sea correcta
+const Pedido = require('../Models/PedidoModel');
 
 // Crear nuevo pedido (POST)
 const crearPedido = async (req, res) => {
     try {
-        const { cliente, productos, subtotal, iva, total, metodoPago, direccionEnvio } = req.body;
+        const { nombreCliente, correoCliente, telefonoCliente, productos, metodoPago, direccionEnvio } = req.body;
+
+        // Calcular subtotal y total
+        let subtotal = 0;
+        productos.forEach(producto => {
+            subtotal += producto.subtotal;  // Cada producto tiene un campo 'subtotal' ya calculado
+        });
+        const total = subtotal;  // El total es igual al subtotal sin IVA
+
         const nuevoPedido = new Pedido({
-            cliente,
+            nombreCliente,
+            correoCliente,
+            telefonoCliente,
             productos,
             subtotal,
-            iva,
             total,
             metodoPago,
             direccionEnvio
         });
+
         const pedidoGuardado = await nuevoPedido.save();
         res.status(201).json(pedidoGuardado);
     } catch (error) {
@@ -23,9 +33,7 @@ const crearPedido = async (req, res) => {
 // Obtener todos los pedidos (GET)
 const obtenerPedidos = async (req, res) => {
     try {
-        const pedidos = await Pedido.find()
-            .populate('cliente')
-            .populate('productos.producto'); // Aquí se hace el populate
+        const pedidos = await Pedido.find();
         res.status(200).json(pedidos);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los pedidos', error });
@@ -34,22 +42,11 @@ const obtenerPedidos = async (req, res) => {
 
 // Actualizar estado del pedido (PUT)
 const actualizarEstadoPedido = async (req, res) => {
-    const { id } = req.params; // ID del pedido
-    const { estado, motivoCancelacion } = req.body; // Nuevo estado y motivo de cancelación si aplica
+    const { id } = req.params;
+    const { estado } = req.body;
 
     try {
-        // Validación del estado proporcionado
-        const estadosPermitidos = ['pendiente', 'enviado', 'entregado', 'cancelado'];
-        if (estado && !estadosPermitidos.includes(estado)) {
-            return res.status(400).json({ message: 'Estado no válido' });
-        }
-
-        // Actualizar el pedido
-        const pedidoActualizado = await Pedido.findByIdAndUpdate(
-            id,
-            { estado, motivoCancelacion },
-            { new: true }
-        );
+        const pedidoActualizado = await Pedido.findByIdAndUpdate(id, { estado }, { new: true });
 
         if (!pedidoActualizado) {
             return res.status(404).json({ message: 'Pedido no encontrado' });
@@ -61,35 +58,11 @@ const actualizarEstadoPedido = async (req, res) => {
     }
 };
 
-// Actualizar pedido completo (PUT)
-const actualizarPedidoCompleto = async (req, res) => {
-    const { id } = req.params; // ID del pedido
-    const { cliente, productos, subtotal, iva, total, metodoPago, direccionEnvio, estado } = req.body;
-
-    try {
-        // Actualizar el pedido con todos los datos nuevos
-        const pedidoActualizado = await Pedido.findByIdAndUpdate(
-            id,
-            { cliente, productos, subtotal, iva, total, metodoPago, direccionEnvio, estado },
-            { new: true }
-        );
-
-        if (!pedidoActualizado) {
-            return res.status(404).json({ message: 'Pedido no encontrado' });
-        }
-
-        res.status(200).json(pedidoActualizado);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el pedido completo', error });
-    }
-};
-
 // Eliminar pedido (DELETE)
 const eliminarPedido = async (req, res) => {
-    const { id } = req.params; // ID del pedido
+    const { id } = req.params;
 
     try {
-        // Eliminar el pedido
         const pedidoEliminado = await Pedido.findByIdAndDelete(id);
 
         if (!pedidoEliminado) {
@@ -102,4 +75,4 @@ const eliminarPedido = async (req, res) => {
     }
 };
 
-module.exports = { crearPedido, obtenerPedidos, actualizarEstadoPedido, actualizarPedidoCompleto, eliminarPedido };
+module.exports = { crearPedido, obtenerPedidos, actualizarEstadoPedido, eliminarPedido };
