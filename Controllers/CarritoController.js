@@ -3,18 +3,30 @@ const Carrito = require('../Models/CarritoModel');
 
 // Crear un carrito nuevo
 const crearCarrito = async (req, res) => {
-    try {
-        const nuevoCarrito = new Carrito({
-            productos: req.body.productos,
-            total: req.body.total,
-            estado: 'activo'
-        });
-        const carritoGuardado = await nuevoCarrito.save();
-        res.status(201).json(carritoGuardado);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al crear el carrito', error });
-    }
+  try {
+    const carritoData = req.body;
+
+    // Calcular subtotales
+    carritoData.productos.forEach((producto) => {
+      producto.subtotal = producto.cantidad * producto.precioUnitario;
+    });
+
+    // Calcular subtotal general y total
+    carritoData.subtotal = carritoData.productos.reduce((acc, producto) => acc + producto.subtotal, 0);
+    carritoData.total = carritoData.subtotal; // Si no hay impuestos, total es igual al subtotal
+
+    const nuevoCarrito = new Carrito(carritoData);
+    const carritoGuardado = await nuevoCarrito.save();
+
+    res.status(201).json(carritoGuardado);
+  } catch (error) {
+    res.status(400).json({
+      message: "Error al crear el carrito",
+      error,
+    });
+  }
 };
+
 
 // Obtener el carrito (si solo hay uno por usuario)
 const obtenerCarrito = async (req, res) => {
