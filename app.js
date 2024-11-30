@@ -13,6 +13,7 @@ const clientesRoutes = require('./Routes/ClienteRoutes');
 const pedidoRoutes = require('./Routes/PedidoRoutes');
 const ventaRoutes = require('./Routes/VentasRoutes');
 const DevolucionRoutes = require('./Routes/DevolucionRoutes');
+const carritoRoutes = require('./Routes/CarritoRoutes');
 
 // Cargar variables de entorno desde el archivo .env
 dotenv.config();
@@ -37,6 +38,7 @@ app.use('/api/clientes', clientesRoutes);//Si Sirve
 app.use('/api/pedido', pedidoRoutes);//No Sirve
 app.use('/api/ventas', ventaRoutes);//Si Sirve
 app.use('/api/devolucion', DevolucionRoutes); //Si Sirve
+app.use('/api/carrito', carritoRoutes);
 
 // Conectar a MongoDB con Mongoose
 mongoose.connect(process.env.MONGO_URI)
