@@ -1,5 +1,3 @@
-// models/Venta.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -34,7 +32,7 @@ const VentaSchema = new Schema({
   },
   estado: {
     type: String,
-    enum: ['Pagado', 'Cancelado'],
+    enum: ['Pagado', 'Cancelado', 'Anulada'],
     default: 'Pagado'
   },
   fecha: {
