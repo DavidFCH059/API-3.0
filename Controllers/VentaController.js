@@ -1,5 +1,3 @@
-// controllers/VentaController.js
-
 const Venta = require('../Models/VentaModel');
 
 // Crear nueva venta
@@ -16,7 +14,7 @@ exports.crearVenta = async (req, res) => {
 // Obtener todas las ventas
 exports.obtenerVentas = async (req, res) => {
   try {
-    const ventas = await Venta.find().populate('cliente productos.producto');
+    const ventas = await Venta.find(); // Sin relaciones con otros modelos
     res.status(200).json(ventas);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener las ventas', error });
@@ -26,7 +24,7 @@ exports.obtenerVentas = async (req, res) => {
 // Obtener venta por ID
 exports.obtenerVentaPorId = async (req, res) => {
   try {
-    const venta = await Venta.findById(req.params.id).populate('cliente productos.producto');
+    const venta = await Venta.findById(req.params.id); // Sin relaciones con otros modelos
     if (!venta) {
       return res.status(404).json({ message: 'Venta no encontrada' });
     }
