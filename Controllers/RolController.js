@@ -1,4 +1,3 @@
-// controllers/rolController.js
 const Rol = require('../Models/RolModel');
 
 // Crear un nuevo rol
