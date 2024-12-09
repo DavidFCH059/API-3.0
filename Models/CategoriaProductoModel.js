@@ -12,11 +12,6 @@ const categoriaSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    Observaciones:{
-        type: String,
-        required: true,
-        trim: true
-    }
     estado: {
         type: String,
         enum: ['activo', 'inactivo'],
