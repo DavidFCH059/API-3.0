@@ -1,5 +1,3 @@
-// models/Cliente.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -26,7 +24,18 @@ const ClienteSchema = new Schema({
   estado: {
     type: Boolean,
     default: true
+  },
+  calificacion: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 5,
+    validate: {
+      validator: Number.isInteger,
+      message: 'La calificación debe ser un número entero.'
+    }
   }
 });
 
 module.exports = mongoose.model('Cliente', ClienteSchema);
+
