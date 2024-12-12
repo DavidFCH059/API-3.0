@@ -1,5 +1,3 @@
-// controllers/clienteController.js
-
 const Cliente = require('../Models/ClienteModel');
 
 // Crear un cliente
@@ -9,7 +7,7 @@ exports.crearCliente = async (req, res) => {
     await cliente.save();
     res.status(201).json(cliente);
   } catch (error) {
-    res.status(400).json({ error: 'Error al crear el cliente' });
+    res.status(400).json({ error: 'Error al crear el cliente', detalles: error.message });
   }
 };
 
@@ -37,11 +35,11 @@ exports.obtenerClientePorId = async (req, res) => {
 // Actualizar un cliente
 exports.actualizarCliente = async (req, res) => {
   try {
-    const cliente = await Cliente.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const cliente = await Cliente.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
     if (!cliente) return res.status(404).json({ error: 'Cliente no encontrado' });
     res.json(cliente);
   } catch (error) {
-    res.status(400).json({ error: 'Error al actualizar el cliente' });
+    res.status(400).json({ error: 'Error al actualizar el cliente', detalles: error.message });
   }
 };
 
@@ -55,3 +53,4 @@ exports.eliminarCliente = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar el cliente' });
   }
 };
+
